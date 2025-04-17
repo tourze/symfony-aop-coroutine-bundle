@@ -9,7 +9,7 @@
 通过 `#[AsCoroutine]` 注解标记需要协程支持的服务：
 
 ```php
-use AopCoroutineBundle\Attribute\AsCoroutine;
+use Tourze\Symfony\AopCoroutineBundle\Attribute\AsCoroutine;
 
 #[AsCoroutine]
 class UserService
@@ -66,14 +66,14 @@ $logger->info('Some message');
 
 ```php
 return [
-    AopCoroutineBundle\AopCoroutineBundle::class => ['all' => true],
+    Tourze\Symfony\AopCoroutineBundle\AopCoroutineBundle::class => ['all' => true],
 ];
 ```
 
 2. 标记需要协程支持的服务：
 
 ```php
-use AopCoroutineBundle\Attribute\AsCoroutine;
+use Tourze\Symfony\AopCoroutineBundle\Attribute\AsCoroutine;
 
 #[AsCoroutine]
 class MyService
@@ -87,7 +87,7 @@ class MyService
 ### 1. 创建协程服务
 
 ```php
-use AopCoroutineBundle\Attribute\AsCoroutine;
+use Tourze\Symfony\AopCoroutineBundle\Attribute\AsCoroutine;
 
 #[AsCoroutine]
 class StateService
