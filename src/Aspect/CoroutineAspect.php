@@ -8,9 +8,9 @@ use Symfony\Contracts\Service\ResetInterface;
 use Tourze\Symfony\Aop\Attribute\Aspect;
 use Tourze\Symfony\Aop\Attribute\Before;
 use Tourze\Symfony\Aop\Model\JoinPoint;
-use Tourze\Symfony\Aop\Service\ContextService;
 use Tourze\Symfony\Aop\Service\InstanceService;
 use Tourze\Symfony\AopCoroutineBundle\Attribute\AsCoroutine;
+use Tourze\Symfony\RuntimeContextBundle\Service\ContextServiceInterface;
 
 /**
  * 如果需要拦截，那我们直接替换instance对象
@@ -24,7 +24,7 @@ class CoroutineAspect implements EventSubscriberInterface, ResetInterface
     private static array $services = [];
 
     public function __construct(
-        private readonly ContextService $contextService,
+        private readonly ContextServiceInterface $contextService,
         private readonly InstanceService $instanceService,
     ) {
     }
