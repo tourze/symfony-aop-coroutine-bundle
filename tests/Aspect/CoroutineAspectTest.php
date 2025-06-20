@@ -11,24 +11,14 @@ class CoroutineAspectTest extends TestCase
 {
     use TestHelper;
 
-    private CoroutineAspect $aspect;
-
     protected function setUp(): void
     {
-        $contextService = $this->createContextServiceMock();
-        $instanceService = $this->createInstanceServiceMock();
-
-        $this->aspect = new CoroutineAspect(
-            $contextService,
-            $instanceService
-        );
+        // No need for setup in this test
     }
 
     public function testGetSubscribedEvents(): void
     {
         $events = CoroutineAspect::getSubscribedEvents();
-
-        $this->assertIsArray($events);
         $this->assertArrayHasKey(KernelEvents::TERMINATE, $events);
         $this->assertEquals(['reset', -10999], $events[KernelEvents::TERMINATE]);
     }

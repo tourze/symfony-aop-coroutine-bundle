@@ -66,16 +66,16 @@ class CoroutineAspect implements EventSubscriberInterface, ResetInterface
         $serviceId = $joinPoint->getInternalServiceId();
         $contextId = $this->contextService->getId();
 
-        if (!isset(static::$services[$contextId])) {
-            static::$services[$contextId] = [];
+        if (!isset(self::$services[$contextId])) {
+            self::$services[$contextId] = [];
         }
-        if (!isset(static::$services[$contextId][$serviceId])) {
-            static::$services[$contextId][$serviceId] = $this->instanceService->create($joinPoint);
+        if (!isset(self::$services[$contextId][$serviceId])) {
+            self::$services[$contextId][$serviceId] = $this->instanceService->create($joinPoint);
             // var_dump("创建协程服务:{$contextId} -> {$serviceId}");
             // debug_print_backtrace();
         }
 
-        $joinPoint->setInstance(static::$services[$contextId][$serviceId]);
+        $joinPoint->setInstance(self::$services[$contextId][$serviceId]);
     }
 
     public static function getSubscribedEvents(): array
@@ -90,6 +90,6 @@ class CoroutineAspect implements EventSubscriberInterface, ResetInterface
         $contextId = $this->contextService->getId();
         // var_dump("reset协程:{$contextId}");
         // debug_print_backtrace();
-        unset(static::$services[$contextId]);
+        unset(self::$services[$contextId]);
     }
 }

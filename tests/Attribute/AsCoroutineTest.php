@@ -13,7 +13,8 @@ class AsCoroutineTest extends TestCase
         $reflectionClass = new \ReflectionClass(AsCoroutine::class);
 
         // 确保 AsCoroutine 类是一个 Attribute
-        $this->assertTrue($reflectionClass->isSubclassOf(\Attribute::class) || $reflectionClass->getAttributes(\Attribute::class));
+        $attributes = $reflectionClass->getAttributes(\Attribute::class);
+        $this->assertNotEmpty($attributes, 'AsCoroutine should have Attribute annotation');
 
         // 测试 AsCoroutine 是 AutoconfigureTag 的子类
         $this->assertTrue($reflectionClass->isSubclassOf(AutoconfigureTag::class));
@@ -31,36 +32,12 @@ class AsCoroutineTest extends TestCase
         // 设置构造函数为可访问
         $constructor->setAccessible(true);
 
-        // 创建一个模拟的父类构造函数调用捕获器
-        $parentConstructorCalled = false;
-        $tagName = null;
-
-        // 定义一个临时类来捕获父构造函数的调用
-        $mockParent = new class($parentConstructorCalled, $tagName) extends AutoconfigureTag {
-            private $parentConstructorCalled;
-            private $tagName;
-
-            public function __construct(&$parentConstructorCalled, &$tagName)
-            {
-                $this->parentConstructorCalled = &$parentConstructorCalled;
-                $this->tagName = &$tagName;
-            }
-
-            public function __call($name, $arguments)
-            {
-                if ($name === '__construct') {
-                    $this->parentConstructorCalled = true;
-                    $this->tagName = $arguments[0];
-                }
-                return null;
-            }
-        };
-
-        // 创建模拟 AsCoroutine 实例并手动调用其构造函数
+        // 创建 AsCoroutine 实例
         $asCoroutine = new AsCoroutine();
-
-        // 直接访问 AsCoroutine 源代码验证
-        $this->assertTrue(method_exists(AsCoroutine::class, '__construct'));
+        
+        // 验证实例创建成功
+        $this->assertInstanceOf(AsCoroutine::class, $asCoroutine);
+        $this->assertInstanceOf(AutoconfigureTag::class, $asCoroutine);
 
         // 最简单的测试：验证 AsCoroutine 没有重写 getName 方法
         $this->assertFalse(method_exists(AsCoroutine::class, 'getName'));
