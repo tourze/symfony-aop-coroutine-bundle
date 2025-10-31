@@ -1,0 +1,13 @@
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  # 在测试环境中排除 CoroutineAspectEventSubscriber，避免依赖问题
+  Tourze\Symfony\AopCoroutineBundle\Aspect\CoroutineAspectEventSubscriber:
+    autowire: false
+    autoconfigure: false
+
+  Tourze\Symfony\AopCoroutineBundle\Logger\:
+    resource: '../../Logger/'

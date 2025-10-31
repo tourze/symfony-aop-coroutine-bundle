@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\Symfony\AopCoroutineBundle\Aspect;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Contracts\Service\ResetInterface;
@@ -16,7 +19,7 @@ use Tourze\Symfony\RuntimeContextBundle\Service\ContextServiceInterface;
  * 如果需要拦截，那我们直接替换instance对象
  */
 #[Aspect]
-class CoroutineAspect implements EventSubscriberInterface, ResetInterface
+class CoroutineAspectEventSubscriber implements EventSubscriberInterface, ResetInterface
 {
     /**
      * @var object[][]
@@ -58,7 +61,7 @@ class CoroutineAspect implements EventSubscriberInterface, ResetInterface
     #[Before(parentClasses: [
         \SessionHandlerInterface::class,
         \SessionUpdateTimestampHandlerInterface::class,
-        \Doctrine\ORM\EntityManagerInterface::class,
+        EntityManagerInterface::class,
     ])]
     #[Before(classAttribute: AsCoroutine::class)]
     public function replaceInstance(JoinPoint $joinPoint): void

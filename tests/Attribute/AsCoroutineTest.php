@@ -1,14 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\Symfony\AopCoroutineBundle\Tests\Attribute;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Tourze\Symfony\AopCoroutineBundle\Attribute\AsCoroutine;
 
-class AsCoroutineTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(AsCoroutine::class)]
+final class AsCoroutineTest extends TestCase
 {
-    public function testAsCoroutineAttributeIsAttribute(): void
+    public function testAsCoroutineIsAttributeAndExtendsAutoconfigureTag(): void
     {
         $reflectionClass = new \ReflectionClass(AsCoroutine::class);
 
@@ -20,37 +28,18 @@ class AsCoroutineTest extends TestCase
         $this->assertTrue($reflectionClass->isSubclassOf(AutoconfigureTag::class));
     }
 
-    public function testAsCoroutineCallsParentConstructorWithTagName(): void
+    public function testAsCoroutineConstructorPassesTagName(): void
     {
-        // 使用反射创建一个模拟的 AsCoroutine 来验证其行为
-        $reflectionClass = new \ReflectionClass(AsCoroutine::class);
-        $constructor = $reflectionClass->getConstructor();
-
-        // 验证构造函数是否存在
-        $this->assertNotNull($constructor);
-
-        // 设置构造函数为可访问
-        $constructor->setAccessible(true);
-
-        // 创建 AsCoroutine 实例
+        // 实际创建实例来验证行为
         $asCoroutine = new AsCoroutine();
-        
-        // 验证实例创建成功
-        $this->assertInstanceOf(AsCoroutine::class, $asCoroutine);
-        $this->assertInstanceOf(AutoconfigureTag::class, $asCoroutine);
 
-        // 最简单的测试：验证 AsCoroutine 没有重写 getName 方法
-        $this->assertFalse(method_exists(AsCoroutine::class, 'getName'));
+        // 通过反射检查父类的 tags 属性值
+        $parentClass = new \ReflectionClass(get_parent_class(AutoconfigureTag::class));
+        $tagsProperty = $parentClass->getProperty('tags');
 
-        // 使用反射来验证源代码中的行为
-        $reflectionMethod = new \ReflectionMethod(AsCoroutine::class, '__construct');
-        $lines = file($reflectionMethod->getFileName());
-        $startLine = $reflectionMethod->getStartLine() - 1;
-        $endLine = $reflectionMethod->getEndLine();
-        $methodBody = implode('', array_slice($lines, $startLine, $endLine - $startLine));
-
-        // 确认构造函数中传递了 'coroutine-service' 给父类构造函数
-        $this->assertStringContainsString("parent::__construct('coroutine-service')", $methodBody);
+        // 验证tags数组结构符合预期
+        $expectedTags = [['coroutine-service' => []]];
+        $this->assertEquals($expectedTags, $tagsProperty->getValue($asCoroutine));
     }
 
     public function testAttributeTarget(): void

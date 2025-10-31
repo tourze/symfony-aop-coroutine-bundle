@@ -1,24 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\Symfony\AopCoroutineBundle\Tests\DependencyInjection;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Tourze\Symfony\AopCoroutineBundle\Aspect\CoroutineAspect;
+use Tourze\PHPUnitSymfonyUnitTest\AbstractDependencyInjectionExtensionTestCase;
+use Tourze\Symfony\AopCoroutineBundle\Aspect\CoroutineAspectEventSubscriber;
 use Tourze\Symfony\AopCoroutineBundle\DependencyInjection\AopCoroutineExtension;
 use Tourze\Symfony\AopCoroutineBundle\Logger\CoroutineProcessor;
 
-class AopCoroutineExtensionTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(AopCoroutineExtension::class)]
+final class AopCoroutineExtensionTest extends AbstractDependencyInjectionExtensionTestCase
 {
     public function testLoad(): void
     {
         $container = new ContainerBuilder();
-        $extension = new AopCoroutineExtension();
+        $container->setParameter('kernel.environment', 'test');
+        $container->setParameter('kernel.project_dir', __DIR__ . '/../../');
 
+        $extension = new AopCoroutineExtension();
         $extension->load([], $container);
 
-        // 测试 CoroutineAspect 服务是否已注册
-        $this->assertTrue($container->hasDefinition(CoroutineAspect::class));
+        // 测试 CoroutineAspectEventSubscriber 服务是否已注册
+        $this->assertTrue($container->hasDefinition(CoroutineAspectEventSubscriber::class));
 
         // 测试 CoroutineProcessor 服务是否已注册
         $this->assertTrue($container->hasDefinition(CoroutineProcessor::class));

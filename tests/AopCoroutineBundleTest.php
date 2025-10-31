@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\Symfony\AopCoroutineBundle\Tests;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractBundleTestCase;
 use Tourze\Symfony\AopCoroutineBundle\AopCoroutineBundle;
 
-class AopCoroutineBundleTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(AopCoroutineBundle::class)]
+#[RunTestsInSeparateProcesses]
+final class AopCoroutineBundleTest extends AbstractBundleTestCase
 {
-    public function testBundleCreation(): void
-    {
-        // 简单测试 bundle 实例化
-        $bundle = new AopCoroutineBundle();
-        $this->assertInstanceOf(AopCoroutineBundle::class, $bundle);
-    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\Symfony\AopCoroutineBundle\Logger;
 
 use Monolog\LogRecord;
@@ -8,7 +10,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Tourze\Symfony\RuntimeContextBundle\Service\ContextServiceInterface;
 
 #[AutoconfigureTag(name: 'monolog.processor')]
-class CoroutineProcessor implements ProcessorInterface
+final class CoroutineProcessor implements ProcessorInterface
 {
     public function __construct(private readonly ContextServiceInterface $contextService)
     {
@@ -17,6 +19,7 @@ class CoroutineProcessor implements ProcessorInterface
     public function __invoke(LogRecord $record): LogRecord
     {
         $record->extra['context_id'] = $this->contextService->getId();
+
         return $record;
     }
 }
